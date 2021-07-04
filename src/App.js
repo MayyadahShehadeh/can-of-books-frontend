@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-
 import Header from './Header';
 import IsLoadingAndError from './IsLoadingAndError';
 import Footer from './Footer';
@@ -29,7 +28,7 @@ class App extends Component {
               <Route exact path="/">
                 {/* TODO: if the user is logged in, render the `BestBooks` component, if they are not, render the `Login` component */}
 
-                {isAuthenticated === true ? <BestBooks/> : <LoginButton />}
+                {this.props.auth0.isAuthenticated === true ? <BestBooks/> : <LoginButton />}
 
               </Route>
               {/* TODO: add a route with a path of '/profile' that renders a `Profile` component */}
