@@ -2,12 +2,7 @@ import React, { Component } from 'react'
 import Header from './Header';
 import IsLoadingAndError from './IsLoadingAndError';
 import Footer from './Footer';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
+import {BrowserRouter as Router,Switch,Route} from "react-router-dom";
 import LoginButton from './component/LoginButton'
 import Profile from './component/Profile';
 import BestBooks from './BestBooks';
