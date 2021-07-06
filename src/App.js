@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Header from './Header';
 import Footer from './Footer';
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Profile from './component/Profile';
 import BestBooks from './BestBooks';
 import { withAuth0 } from "@auth0/auth0-react"

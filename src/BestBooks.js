@@ -36,9 +36,9 @@ class MyFavoriteBooks extends React.Component {
   onClickSearch = (e) => {
     e.preventDefault();
 
-    axios.get('http://localhost:8000/books?email=bardaweel95.rawan@gmail.com').then(response => {
+    axios.get(`http://localhost:8000/books?email=${this.state.email}`).then(response => {
       this.setState({
-        booksData: response.data
+        booksData: response.data.books
         
       })
       
@@ -66,7 +66,7 @@ class MyFavoriteBooks extends React.Component {
           {/* {console.log('hiii',booksData)} */}
           
           {this.state.booksData.map(book => {
-            return <li><Book bookName={book.name} /></li>
+            return <li> {book.name} </li>
           })
           }
 
