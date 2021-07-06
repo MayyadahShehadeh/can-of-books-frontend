@@ -68,7 +68,11 @@ class MyFavoriteBooks extends React.Component {
           {/* {console.log('hiii',booksData)} */}
           
           {this.state.booksData.map(book => {
-            return <ListGroup.Item> {book.name} </ListGroup.Item>
+            return <ListGroup.Item>
+              <h2> {book.name}</h2> 
+           <p>{'book description :'+ book.description} </p>
+           <h5>{'status :'+ book.status}</h5>
+           </ListGroup.Item>
           })
           }
 
