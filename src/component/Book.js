@@ -7,7 +7,7 @@ export class Book extends Component {
         return (
             <div>
                 <>
-                    {this.props.booksData.length &&
+                    {this.props.booksData &&
                         this.props.booksData.map((book, idx) => (
                             <>
                                 <Card  key={idx}>
@@ -19,6 +19,7 @@ export class Book extends Component {
                                         <Card.Text>
                                             {book.status}
                                         </Card.Text>
+                                        <Book/>
                                     </Card.Body>
                                 </Card>
                             </>
