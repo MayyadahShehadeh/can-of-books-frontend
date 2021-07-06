@@ -4,6 +4,8 @@ import Jumbotron from 'react-bootstrap/Jumbotron';
 import './BestBooks.css';
 import axios from 'axios';
 import Book from './component/Book';
+import  ListGroup  from "react-bootstrap/ListGroup";
+
 
 // const serverUrl = process.env.PORT;
 
@@ -66,7 +68,7 @@ class MyFavoriteBooks extends React.Component {
           {/* {console.log('hiii',booksData)} */}
           
           {this.state.booksData.map(book => {
-            return <li> {book.name} </li>
+            return <ListGroup.Item> {book.name} </ListGroup.Item>
           })
           }
 
