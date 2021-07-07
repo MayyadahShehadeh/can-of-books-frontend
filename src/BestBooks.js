@@ -24,61 +24,69 @@ class MyFavoriteBooks extends React.Component {
     }
   }
 
-  // componentDidMount = async () => {
-  //   await axios.get(`${serverUrl}/books?email=${this.state.userEmail}`).then(response => {
-  //            this.setState({
-  //           booksData: response.data[response.data.length-1].books,
-  //       })
-  //   }).catch(error => alert(error))
-  // }
+  //================================================
 
   inputEmail = (e) => {
     this.setState({
       userEmail: e.target.value
     })
-
-
   }
+
+  //================================================
+
   onClickSearch = (e) => {
     e.preventDefault();
-
     axios.get(`http://localhost:8000/books?email=${this.state.email}`).then(response => {
       this.setState({
         booksData: response.data.books
 
       })
-
-      // console.log(response.data)
     })
-
   }
+  //================================================
 
-  addBook = (e) => {
-    // console.log(e.target.value)
-    this.setState({
+  // deleteBook = async (index) => {
+  //   console.log(index);
+
+  //   const newArrayOfBooks = this.state.books.filter((book, i) => {
+  //     return i !== index;
+  //   });
+  //   console.log(newArrayOfBooks);
+  //   this.setState({
+  //     books: newArrayOfBooks
+  //   });
+  //   const { user } = this.props.auth0;
+  //   const query = {
+  //     email: user.email
+  //   }
+  //   console.log('app', query);
+  //   await axios.delete(`http://localhost:8000/book/${index}`, { params: query })
+
+  // }
+
+  //================================================
+
+  addBook = async(e) => {
+      this.setState({
       addNewBook: e.target.value
-
     })
-
   }
+
+  //================================================
 
   submitBooks = (e) => {
     e.preventDefault();
-    // console.log(e.target)
-
     this.setState({
-      newBookName:e.target.book.value
+      newBookName: e.target.book.value
     })
     console.log(this.state.newBookName)
     const reqBody = {
       userEmail: this.state.userEmail,
       name: this.state.newBookName
-      // bookDesc:this.state.newBookDesc,
-      // bookStatus:this.state.newBookstatus
     }
     { console.log(this.state.newBookName) }
 
-    axios.post(`http://localhost:8000/books`, reqBody).then(response => {
+    axios.post(`http://localhost:8000/create_book`, reqBody).then(response => {
       console.log(response.data)
       this.setState({
         booksData: response.data.books
@@ -86,11 +94,13 @@ class MyFavoriteBooks extends React.Component {
     }).catch(error => alert(error.message))
 
   }
+  //================================================
+
+  
+
   render() {
     return (
       <>
-        {/* {console.log(this.state.addNewBook)} */}
-
         <Jumbotron>
           <h1>My Favorite Books</h1>
           <form >
@@ -102,7 +112,7 @@ class MyFavoriteBooks extends React.Component {
           <form onSubmit={(e) => { this.submitBooks(e) }} >
             <input name='book' type="text" placeholder="Book Name" onChange={(e) => { this.addBook(e) }} />
             <button> Add Book </button>
-
+            <button onClick={(e) => { this.deleteBook(e) }}> Delete </button>
           </form>
 
           <p>
@@ -110,14 +120,9 @@ class MyFavoriteBooks extends React.Component {
           </p>
         </Jumbotron>
         <div>
-          {/* {console.log('hiii',booksData)} */}
-
           {this.state.booksData.map(book => {
             return <ListGroup.Item>
               <h2> {book.name}</h2>
-
-              {/* <p>{'book description :'+ book.description} </p> */}
-              {/* <h5>{'status :'+ book.status}</h5> */}
             </ListGroup.Item>
           })
           }
