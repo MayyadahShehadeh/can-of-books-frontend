@@ -1,131 +1,234 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Jumbotron from 'react-bootstrap/Jumbotron';
+import { Jumbotron , Card} from 'react-bootstrap/';
 import './BestBooks.css';
 import axios from 'axios';
-// import Book from './component/Book';
+import { withAuth0 } from '@auth0/auth0-react'
 import ListGroup from "react-bootstrap/ListGroup";
-
-
-// const serverUrl = process.env.PORT;
+import AddBookBtn from './component/AddBookBtn';
+import DeleteBookBtn from './component/DeleteBookBtn';
+import UpdateButton from './component/UpdateButton';
 
 
 class MyFavoriteBooks extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
-      userEmail: '',
+      // userEmail: '',
       booksData: [],
-      addNewBook: '',
-      newBookName: '',
-      newBookDesc: '',
-      newBookstatus: '',
+      // addNewBook: false,
+      name: '',
+      description: '',
+      status: '',
     }
   }
 
-  // componentDidMount = async () => {
-  //   await axios.get(`${serverUrl}/books?email=${this.state.userEmail}`).then(response => {
-  //            this.setState({
-  //           booksData: response.data[response.data.length-1].books,
-  //       })
-  //   }).catch(error => alert(error))
-  // }
-
-  inputEmail = (e) => {
-    this.setState({
-      userEmail: e.target.value
-    })
-
-
+  
+  componentDidMount(){
+    this.getBooks();
   }
-  onClickSearch = (e) => {
-    e.preventDefault();
+  
+  // ===========================================================
 
-    axios.get(`http://localhost:8000/books?email=${this.state.email}`).then(response => {
-      this.setState({
-        booksData: response.data.books
+  getBooks=async ()=>{
 
-      })
+  const {user}=this.props.auth0;
+  const urlBooks =`${process.env.REACT_APP_BACKEND_URL}/books?email=${user.email}`;
+  const reqBook= await axios.get(urlBooks);
 
-      // console.log(response.data)
-    })
+  this.setState({
+    booksData:reqBook.data.books
+  })
+}
 
+getName=(e)=>{
+  e.preventDefault();
+  this.setState({
+    name:e.target.value
+  })
+}
+
+// ===========================================================
+
+getDescription = (e) => {
+  console.log(e.target.value);
+  e.preventDefault();
+  this.setState({
+    description: e.target.value
+  })
+}
+// ===========================================================
+getStatus = (e) => {
+  e.preventDefault();
+  this.setState({
+    status: e.target.value
+  })
+}
+// ===========================================================
+ //add books
+ addBook = async (e) => {
+  e.preventDefault();
+  const { user } = this.props.auth0;
+  const bookData = {
+    name: this.state.name,
+    description: this.state.description,
+    status: this.state.status,
+    email: user.email
   }
+  
+  const addBookURL = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/create_book`, bookData);
+  
 
-  addBook = (e) => {
-    // console.log(e.target.value)
-    this.setState({
-      addNewBook: e.target.value
+  this.setState({
+    booksData: addBookURL.data
+  })
+}
 
-    })
+ // ===========================================================
+  //delete books
+  deleteBook = async (book_idx) => {
+    let { user } = this.props.auth0;
 
-  }
-
-  submitBooks = (e) => {
-    e.preventDefault();
-    // console.log(e.target)
-
-    this.setState({
-      newBookName:e.target.book.value
-    })
-    console.log(this.state.newBookName)
-    const reqBody = {
-      userEmail: this.state.userEmail,
-      name: this.state.newBookName
-      // bookDesc:this.state.newBookDesc,
-      // bookStatus:this.state.newBookstatus
+    let queryEmail = {
+      userEmail: user.email
     }
-    { console.log(this.state.newBookName) }
+    let deleteBookURL = await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/delete_books/${Number(book_idx)}`, { params: queryEmail });
 
-    axios.post(`http://localhost:8000/books`, reqBody).then(response => {
-      console.log(response.data)
-      this.setState({
-        booksData: response.data.books
-      })
-    }).catch(error => alert(error.message))
-
+    this.setState({
+      booksData: deleteBookURL.data
+    })
   }
+
+  // ===========================================================
+  updateBook = async (e, index) => {
+    e.preventDefault();
+
+    const { user } = this.props.auth0;
+    const bookData = {
+      name: this.state.name,
+      description: this.state.description,
+      status: this.state.status,
+      email: user.email
+    }
+
+    const updateBookURL = await axios.put(`${process.env.REACT_APP_BACKEND_URL}/update_book/${index}`, bookData);
+
+    this.setState({
+      booksData: updateBookURL.data
+    })
+  }
+ 
+  
+
   render() {
     return (
       <>
-        {/* {console.log(this.state.addNewBook)} */}
+       
 
         <Jumbotron>
           <h1>My Favorite Books</h1>
-          <form >
+          {/* <form >
             <input type="text" placeholder="Email" onChange={(e) => { this.inputEmail(e) }} />
             <button onClick={(e) => { this.onClickSearch(e) }} > Search </button> <br></br>
-
           </form>
-
-          <form onSubmit={(e) => { this.submitBooks(e) }} >
-            <input name='book' type="text" placeholder="Book Name" onChange={(e) => { this.addBook(e) }} />
-            <button> Add Book </button>
-
-          </form>
+          <br /> */}
 
           <p>
             This is a collection of my favorite books
           </p>
         </Jumbotron>
-        <div>
-          {/* {console.log('hiii',booksData)} */}
+     
 
-          {this.state.booksData.map(book => {
-            return <ListGroup.Item>
-              <h2> {book.name}</h2>
+          
+          <AddBookBtn
+            getName={this.getName}
+            getDescription={this.getDescription}
+            getStatus={this.getStatus}
+            addBook={this.addBook}
+          />
+        
 
-              {/* <p>{'book description :'+ book.description} </p> */}
-              {/* <h5>{'status :'+ book.status}</h5> */}
-            </ListGroup.Item>
+          {this.state.booksData.map((book, index) => {
+            
+            <Card className='cardBook' key={index} id={index}>
+            <Card.Body >
+              <Card.Title>Book name: {book.name}</Card.Title>
+              <Card.Text>Description: {book.description}</Card.Text>
+              <Card.Text>Status: {book.status}</Card.Text>
+            </Card.Body>
+            <Card.Footer>
+              <DeleteBookBtn 
+                deleteBook={this.deleteBook}
+                index={index}
+              />
+              <div className="space"></div>
+              <UpdateButton key={index} id={index}
+                getName={this.getName}
+                getDescription={this.getDescription}
+                getStatus={this.getStatus}
+                updateBook={this.updateBook}
+                index={index}
+                bookName= {book.name}
+              />
+            </Card.Footer>
+            </Card>
+
           })
           }
 
-        </div>
+
+
+     
       </>
     )
   }
 }
 
-export default MyFavoriteBooks;
+export default withAuth0(MyFavoriteBooks);
+
+// ===========================================================
+
+
+  // submitBooks = (e) => {
+  //   e.preventDefault();
+  //   // console.log(e.target)
+
+  //   this.setState({
+  //     newBookName: e.target.book.value
+  //   })
+  //   console.log(this.state.newBookName)
+  //   let reqBody = {
+  //     userEmail: this.state.userEmail,
+  //     name: this.state.newBookName,
+  //     bookDesc: this.state.newBookDesc,
+  //     bookStatus: this.state.newBookStatus
+  //   }
+  //   { console.log(this.state.newBookName) }
+
+  //   axios.post(`http://localhost:8000/books`, reqBody).then(response => {
+  //     console.log(response.data)
+  //     this.setState({
+  //       booksData: response.data.books
+  //     })
+  //   }).catch(error => alert(error.message))
+
+  // }
+ 
+  // inputEmail = (e) => {
+  //   this.setState({
+  //     userEmail: e.target.value
+  //   })
+  // }
+
+  // //================================================
+
+  // onClickSearch = (e) => {
+  //   e.preventDefault();
+  //   axios.get(`http://localhost:8000/books?email=${this.state.email}`).then(response => {
+  //     this.setState({
+  //       booksData: response.data.books
+
+  //     })
+  //   })
+  // }
