@@ -28,6 +28,14 @@ class UpdateButton extends Component {
                             <input type="text" onChange={(e)=>this.props.addDescription(e)}></input><br></br>
                             <label>Status:</label>
                             <input type="text" onChange={(e)=>this.props.addStatus(e)}></input>
+
+                        <form className="update-form" onSubmit={(e)=>this.props.updateBook(e,this.props.index)}>
+                            <label>Name:</label>
+                            <input type="text" onChange={(e)=>this.props.getName(e)}></input><br></br>
+                            <label>Description:</label>
+                            <input type="text" onChange={(e)=>this.props.getDescription(e)}></input><br></br>
+                            <label>Status:</label>
+                            <input type="text" onChange={(e)=>this.props.getStatus(e)}></input>
                             <br></br>
                             <button type="submit" onClick={()=>{this.handleModal()}}>Update Book</button>
                         </form>
